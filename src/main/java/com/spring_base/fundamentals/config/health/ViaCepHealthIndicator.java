@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ViaCepHealthIndicator implements HealthIndicator {
 
     private final WebClient webClient;
-    private final ApiProperties apiProperties;  // final → construtor
+    private final ApiProperties apiProperties;
 
     @Override
     public Health health() {
@@ -24,13 +24,13 @@ public class ViaCepHealthIndicator implements HealthIndicator {
                     .block();
 
             return Health.up()
-                    .withDetail("viaCEP", "API disponível")
+                    .withDetail("viaCEP", "API available")
                     .build();
 
         } catch (Exception e) {
             return Health.down()
-                    .withDetail("viaCep", "API indisponível")
-                    .withDetail("erro", e.getMessage())
+                    .withDetail("viaCep", "API unavailable")
+                    .withDetail("error", e.getMessage())
                     .build();
         }
     }

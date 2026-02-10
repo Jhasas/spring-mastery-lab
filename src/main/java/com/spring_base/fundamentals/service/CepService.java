@@ -18,59 +18,59 @@ import java.util.concurrent.Future;
 public class CepService {
 
     private final WebClient webClient;
-    private final ApiProperties apiProperties;  // final → injetado via construtor
+    private final ApiProperties apiProperties;
 
-    public Map<String, Object> buscaCepVirtualThreads(String cep) {
+    public Map<String, Object> fetchCepVirtualThreads(String cep) {
 
-        log.info("Buscando dados para CEP (Virtual Threads): {}", cep);
-        long inicio = System.currentTimeMillis();
+        log.info("Fetching data for CEP (Virtual Threads): {}", cep);
+        long start = System.currentTimeMillis();
 
         try(ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
             Future<String> futureCep = executor.submit(() -> apiCep(cep));
-            Future<String> futureNacionalize = executor.submit(() -> apiNacionalize(cep));
+            Future<String> futureNationalize = executor.submit(() -> apiNationalize(cep));
 
-            String resultadoCep = futureCep.get();
-            String resultadoNacionalize = futureNacionalize.get();
+            String cepResult = futureCep.get();
+            String nationalizeResult = futureNationalize.get();
 
-            long duracao = System.currentTimeMillis() - inicio;
-            log.info("Consulta paralela (Virtual Threads) concluída em {}ms", duracao);
+            long duration = System.currentTimeMillis() - start;
+            log.info("Parallel query (Virtual Threads) completed in {}ms", duration);
 
             return Map.of(
-                    "viaCep", resultadoCep,
-                    "nationalize", resultadoNacionalize,
-                    "tempoMs", duracao,
-                    "metodo", "Virtual Threads"
+                    "viaCep", cepResult,
+                    "nationalize", nationalizeResult,
+                    "elapsedMs", duration,
+                    "method", "Virtual Threads"
             );
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao buscar dados", e);
+            throw new RuntimeException("Error fetching data", e);
         }
 
     }
 
-    public Map<String, Object> buscaCepCompletableFuture(String cep) {
+    public Map<String, Object> fetchCepCompletableFuture(String cep) {
 
-        log.info("Buscando dados para CEP: {}", cep);
-        long inicio = System.currentTimeMillis();
+        log.info("Fetching data for CEP: {}", cep);
+        long start = System.currentTimeMillis();
 
         CompletableFuture<String> futureCep = CompletableFuture.supplyAsync(() -> apiCep(cep));
-        CompletableFuture<String> futureNacionalize = CompletableFuture.supplyAsync(() -> apiNacionalize(cep));
+        CompletableFuture<String> futureNationalize = CompletableFuture.supplyAsync(() -> apiNationalize(cep));
 
-        CompletableFuture.allOf(futureCep, futureNacionalize).join();
+        CompletableFuture.allOf(futureCep, futureNationalize).join();
 
-        long duracao = System.currentTimeMillis() - inicio;
-        log.info("Consulta paralela concluída em {}ms", duracao);
+        long duration = System.currentTimeMillis() - start;
+        log.info("Parallel query completed in {}ms", duration);
 
         return Map.of(
             "viaCep", futureCep.join(),
-            "nationalize", futureNacionalize.join(),
-            "tempoMs", duracao,
-                "metodo", "CompletableFuture"
+            "nationalize", futureNationalize.join(),
+            "elapsedMs", duration,
+                "method", "CompletableFuture"
         );
     }
 
-    private String apiNacionalize(String name) {
+    private String apiNationalize(String name) {
         return webClient.get()
                 .uri(apiProperties.second().url() + "/?name=" + name)
                 .retrieve()

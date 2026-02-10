@@ -1,113 +1,113 @@
 # Spring Mastery Lab - TODO
 
-Roadmap de atividades do laboratório de domínio Spring.
+Activity roadmap for the Spring mastery laboratory.
 
 ---
 
-## Fundacao do Repositorio
+## Repository Foundation
 
-- [ ] **Criar .gitignore adequado para projeto Spring Boot/Maven**
-  - Excluir `target/`, arquivos de IDE (`.idea/`, `.vscode/`, `*.iml`), arquivos de SO (`.DS_Store`), logs e arquivos sensiveis (`.env`)
+- [ ] **Create proper .gitignore for Spring Boot/Maven project**
+  - Exclude `target/`, IDE files (`.idea/`, `.vscode/`, `*.iml`), OS files (`.DS_Store`), logs and sensitive files (`.env`)
 
-- [ ] **Fazer commit inicial completo dos arquivos do projeto**
-  - Commitar todos os arquivos fonte (`pom.xml`, `src/`, `mvnw`, `mvnw.cmd`), excluindo artefatos de build
-  - Depende de: `.gitignore`
+- [ ] **Make initial full commit of project files**
+  - Commit all source files (`pom.xml`, `src/`, `mvnw`, `mvnw.cmd`), excluding build artifacts
+  - Depends on: `.gitignore`
 
-- [ ] **Reescrever README.md como referencia tecnica pessoal**
-  - Proposito do repositorio (laboratorio de dominio Spring)
-  - Indice dos topicos cobertos
-  - Stack utilizada (Java 21, Spring Boot 4.0.2, Maven)
-  - Como rodar localmente
-  - Perfis disponiveis (dev/prod)
-  - Endpoints existentes
-  - Secao de referencias
+- [ ] **Rewrite README.md as a personal technical reference**
+  - Repository purpose (Spring mastery laboratory)
+  - Index of covered topics
+  - Tech stack (Java 21, Spring Boot 4.0.2, Maven)
+  - How to run locally
+  - Available profiles (dev/prod)
+  - Existing endpoints
+  - References section
 
-- [ ] **Configurar GitHub Actions (CI) com build e testes**
-  - Criar `.github/workflows/ci.yml`
-  - Trigger em push/PR para main
+- [ ] **Set up GitHub Actions (CI) with build and tests**
+  - Create `.github/workflows/ci.yml`
+  - Trigger on push/PR to main
   - Steps: checkout, setup Java 21, cache Maven, `mvn verify`
 
 ---
 
-## Qualidade e Estrutura do Codigo
+## Code Quality and Structure
 
-- [ ] **Ampliar cobertura de testes (unitarios e integracao)**
-  - Testes unitarios para `CepService` (mockando WebClient)
-  - Testes de integracao para `CepController` (`@WebMvcTest`)
-  - Teste de carregamento das `ConfigurationProperties`
-  - Teste do `ViaCepHealthIndicator`
-  - Considerar WireMock para simular APIs externas
+- [ ] **Increase test coverage (unit and integration)**
+  - Unit tests for `CepService` (mocking WebClient)
+  - Integration tests for `CepController` (`@WebMvcTest`)
+  - `ConfigurationProperties` loading test
+  - `ViaCepHealthIndicator` test
+  - Consider WireMock for simulating external APIs
 
-- [ ] **Adicionar tratamento global de excecoes (`@ControllerAdvice`)**
-  - Criar `GlobalExceptionHandler`
-  - Tratar erros de validacao (`MethodArgumentNotValidException`)
-  - Tratar CEP nao encontrado
-  - Tratar falhas de comunicacao com APIs externas
-  - Retornar respostas padronizadas com `ProblemDetail` (RFC 7807)
+- [ ] **Add global exception handling (`@ControllerAdvice`)**
+  - Create `GlobalExceptionHandler`
+  - Handle validation errors (`MethodArgumentNotValidException`)
+  - Handle CEP not found
+  - Handle external API communication failures
+  - Return standardized responses with `ProblemDetail` (RFC 7807)
 
-- [ ] **Adicionar documentacao de API com SpringDoc/OpenAPI**
-  - Dependencia `springdoc-openapi` no `pom.xml`
-  - Configurar info da API (titulo, descricao, versao)
-  - Anotar endpoints com `@Operation` e `@ApiResponse`
-  - Acessivel via `/swagger-ui.html`
+- [ ] **Add API documentation with SpringDoc/OpenAPI**
+  - `springdoc-openapi` dependency in `pom.xml`
+  - Configure API info (title, description, version)
+  - Annotate endpoints with `@Operation` and `@ApiResponse`
+  - Accessible at `/swagger-ui.html`
 
-- [ ] **Criar DTOs e usar Records para respostas tipadas**
-  - `CepResponse` (dados do ViaCep)
-  - `NationalizeResponse` (dados do Nationalize)
-  - `CombinedResponse` (resposta unificada com tempo de execucao)
-  - Substituir `Map<String, Object>` por tipos seguros
+- [ ] **Create DTOs using Records for typed responses**
+  - `CepResponse` (ViaCep data)
+  - `NationalizeResponse` (Nationalize data)
+  - `CombinedResponse` (unified response with execution time)
+  - Replace `Map<String, Object>` with type-safe objects
 
-- [ ] **Adicionar analise estatica de codigo**
-  - Checkstyle (estilo de codigo)
-  - SpotBugs (bugs potenciais)
-  - JaCoCo (cobertura de testes)
-  - Integrar com CI para falhar build abaixo do threshold
-
----
-
-## Infraestrutura e DevOps
-
-- [ ] **Adicionar Dockerfile e docker-compose para ambiente local**
-  - Dockerfile multi-stage (build com Maven + runtime com JRE 21 slim)
-  - `docker-compose.yml` para subir a aplicacao e servicos auxiliares futuros
-  - Documentar comandos de build e run no README
-
-- [ ] **Configurar logging estruturado e observabilidade**
-  - Logging estruturado (JSON) para producao via Logback
-  - Micrometer para metricas customizadas (tempo de resposta APIs externas, contadores)
-  - Integracao com Prometheus/Grafana via actuator
-  - Correlation ID nas requisicoes
+- [ ] **Add static code analysis**
+  - Checkstyle (code style)
+  - SpotBugs (potential bugs)
+  - JaCoCo (test coverage)
+  - Integrate with CI to fail build below threshold
 
 ---
 
-## Novos Modulos de Aprendizado
+## Infrastructure and DevOps
 
-- [ ] **Adicionar modulo de persistencia (Spring Data JPA + H2)**
-  - Dependencias Spring Data JPA e H2 (banco em memoria para dev)
-  - Entidade de exemplo, Repository e operacoes CRUD
-  - Versionamento de schema com Flyway ou Liquibase
+- [ ] **Add Dockerfile and docker-compose for local environment**
+  - Multi-stage Dockerfile (build with Maven + runtime with JRE 21 slim)
+  - `docker-compose.yml` to run the application and future auxiliary services
+  - Document build and run commands in README
 
-- [ ] **Adicionar Spring Security basico com exemplos de autenticacao**
-  - Configuracao basica de `SecurityFilterChain`
-  - Autenticacao in-memory para dev
-  - Protecao de endpoints por role
-  - Exemplo de JWT (stateless)
+- [ ] **Set up structured logging and observability**
+  - Structured logging (JSON) for production via Logback
+  - Micrometer for custom metrics (external API response time, counters)
+  - Prometheus/Grafana integration via actuator
+  - Correlation ID in requests
 
-- [ ] **Adicionar cache com Spring Cache (Caffeine)**
-  - Cachear respostas da API ViaCep
-  - Demonstrar `@Cacheable`, `@CacheEvict`, `@CachePut`
-  - Configurar TTL e tamanho maximo
-  - Expor metricas de cache via actuator
+---
 
-- [ ] **Implementar resiliencia com Resilience4j**
-  - Circuit Breaker (evitar chamadas a APIs indisponiveis)
-  - Retry (tentativas automaticas com backoff)
+## New Learning Modules
+
+- [ ] **Add persistence module (Spring Data JPA + H2)**
+  - Spring Data JPA and H2 dependencies (in-memory database for dev)
+  - Example entity, Repository, and CRUD operations
+  - Schema versioning with Flyway or Liquibase
+
+- [ ] **Add basic Spring Security with authentication examples**
+  - Basic `SecurityFilterChain` configuration
+  - In-memory authentication for dev
+  - Endpoint protection by role
+  - JWT example (stateless)
+
+- [ ] **Add caching with Spring Cache (Caffeine)**
+  - Cache ViaCep API responses
+  - Demonstrate `@Cacheable`, `@CacheEvict`, `@CachePut`
+  - Configure TTL and max size
+  - Expose cache metrics via actuator
+
+- [ ] **Implement resilience with Resilience4j**
+  - Circuit Breaker (avoid calls to unavailable APIs)
+  - Retry (automatic retries with backoff)
   - Rate Limiter
-  - Fallback para APIs externas (ViaCep, Nationalize)
+  - Fallback for external APIs (ViaCep, Nationalize)
 
-- [ ] **Adicionar exemplos de mensageria (Spring AMQP ou Kafka)**
-  - Producer e Consumer
-  - Configuracao de filas/topicos
+- [ ] **Add messaging examples (Spring AMQP or Kafka)**
+  - Producer and Consumer
+  - Queue/topic configuration
   - Dead Letter Queue
-  - Testcontainers para testes de integracao
+  - Testcontainers for integration tests
   - Broker via docker-compose

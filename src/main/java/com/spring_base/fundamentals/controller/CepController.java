@@ -18,11 +18,11 @@ public class CepController {
 
     @GetMapping("/v1/{cep}")
     public Map<String, Object> getCepCompletableFuture(@PathVariable String cep) {
-        return cepService.buscaCepCompletableFuture(cep);
+        return cepService.fetchCepCompletableFuture(cep);
     }
 
     @GetMapping("/v2/{cep}")
     public Map<String, Object> getCepVirtualThreads(@PathVariable String cep) {
-        return cepService.buscaCepVirtualThreads(cep);
+        return cepService.fetchCepVirtualThreads(cep);
     }
 }
