@@ -18,6 +18,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Build
         run: ./mvnw clean compile
@@ -33,6 +34,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Test
         run: ./mvnw test
@@ -49,6 +51,7 @@ jobs:
 #        with:
 #          java-version: '21'
 #          distribution: 'temurin'
+#          cache: 'maven'
 
       - name: SonarQube Analysis (placeholder)
         run: echo "SonarQube analysis will be configured here"
@@ -64,6 +67,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Package
         run: ./mvnw package -DskipTests
