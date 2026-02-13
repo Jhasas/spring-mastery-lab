@@ -63,6 +63,32 @@ curl http://localhost:8080/cep/v1/01001000
 ./mvnw test
 ```
 
+## Docker
+
+Multi-stage Dockerfile for containerized builds and deployments.
+
+```bash
+# Build the image
+docker build -t spring-mastery-lab:latest .
+
+# Run the container
+docker run -p 8080:8080 spring-mastery-lab:latest
+```
+
+## CI/CD
+
+GitHub Actions pipeline (`.github/workflows/ci.yml`) with the following stages:
+
+| Stage | Description |
+|-------|-------------|
+| **build** | Compiles the project (`mvn clean compile`) |
+| **test** | Runs unit tests (`mvn test`) |
+| **quality** | Placeholder for SonarQube analysis |
+| **package** | Generates JAR artifact (`mvn package`) and uploads it |
+| **docker** | Builds Docker image via multi-stage Dockerfile |
+
+Pipeline triggers on push and pull request to `main`. Maven dependencies are cached across runs for faster execution.
+
 ## Roadmap
 
 See [TODO.md](TODO.md) for planned modules including Spring Data JPA, Spring Security, Caching, Resilience4j, and Messaging.

@@ -47,6 +47,26 @@ Three-layer structure under `com.spring_base.fundamentals`:
 - Java 21 Virtual Threads via `Executors.newVirtualThreadPerTaskExecutor()`
 - Actuator endpoints: `health`, `info`, `metrics`
 
+## CI/CD
+
+GitHub Actions pipeline at `.github/workflows/ci.yml`:
+- **Jobs**: build → test → quality (placeholder) → package → docker
+- **Trigger**: push and pull_request to `main`
+- **Cache**: Maven dependencies cached via `setup-java` `cache: 'maven'`
+- **Artifacts**: JAR uploaded via `actions/upload-artifact@v4`
+
+## Docker
+
+Multi-stage Dockerfile in project root:
+- **Stage 1 (build)**: `eclipse-temurin:21-jdk` — compiles with Maven
+- **Stage 2 (runtime)**: `eclipse-temurin:21-jre` — runs the JAR only
+- Layer caching optimized: `pom.xml` + wrapper copied before source code
+
+```bash
+docker build -t spring-mastery-lab:latest .
+docker run -p 8080:8080 spring-mastery-lab:latest
+```
+
 ## Dependencies
 
 Maven project (`pom.xml`) with: spring-boot-starter-web, spring-boot-starter-webflux, spring-boot-starter-actuator, spring-boot-starter-validation, Lombok (compile-only).

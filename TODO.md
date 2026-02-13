@@ -22,10 +22,11 @@ Activity roadmap for the Spring mastery laboratory.
   - Existing endpoints
   - References section
 
-- [ ] **Set up GitHub Actions (CI) with build and tests**
-  - Create `.github/workflows/ci.yml`
+- [x] **Set up GitHub Actions (CI) with build and tests**
+  - Created `.github/workflows/ci.yml`
   - Trigger on push/PR to main
-  - Steps: checkout, setup Java 21, cache Maven, `mvn verify`
+  - Jobs: build, test, quality (placeholder), package (JAR artifact), docker
+  - Maven cache enabled via `setup-java` for faster runs
 
 ---
 
@@ -67,10 +68,12 @@ Activity roadmap for the Spring mastery laboratory.
 
 ## Infrastructure and DevOps
 
-- [ ] **Add Dockerfile and docker-compose for local environment**
-  - Multi-stage Dockerfile (build with Maven + runtime with JRE 21 slim)
+- [x] **Add Dockerfile for containerized builds**
+  - Multi-stage Dockerfile (build with JDK 21 + runtime with JRE 21)
+  - Optimized layer caching (pom.xml + wrapper copied before source code)
+  - Docker build integrated into CI pipeline
+- [ ] **Add docker-compose for local environment**
   - `docker-compose.yml` to run the application and future auxiliary services
-  - Document build and run commands in README
 
 - [ ] **Set up structured logging and observability**
   - Structured logging (JSON) for production via Logback
