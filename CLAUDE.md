@@ -29,9 +29,10 @@ Spring Mastery Lab — a Spring Boot 4.0.2 learning project on Java 21 that demo
 
 Three-layer structure under `com.spring_base.fundamentals`:
 
-- **controller/** — REST endpoints. `CepController` exposes `/cep/v1/{cep}` (CompletableFuture) and `/cep/v2/{cep}` (Virtual Threads). `CustomerController` exposes `PUT /customer/{id}` (with Idempotency-Key) and `PATCH /customer/{id}`.
-- **service/** — Business logic. `CepService` calls ViaCep and Nationalize APIs in parallel using two concurrency models. `CustomerService` handles customer CRUD with in-memory storage, idempotency key verification, and execution time metrics.
-- **model/** — Data models. `Customer` class with Lombok `@Data`, `@AllArgsConstructor`, `@NoArgsConstructor`.
+- **controller/** — REST endpoints. `CepController` exposes `/cep/v1/{cep}` (CompletableFuture) and `/cep/v2/{cep}` (Virtual Threads). `CustomerController` exposes `POST /customer`, `PUT /customer/{id}` (with Idempotency-Key), and `PATCH /customer/{id}`.
+- **service/** — Business logic. `CepService` calls ViaCep and Nationalize APIs in parallel using two concurrency models. `CustomerService` handles customer CRUD via `CustomerRepository` (Spring Data JPA), idempotency key verification, and execution time metrics.
+- **repository/** — Data access. `CustomerRepository` extends `JpaRepository<Customer, Long>` for CRUD operations.
+- **model/** — JPA entities. `Customer` entity with `@Entity`, `@Id`, `@GeneratedValue`, Lombok `@Data`, `@AllArgsConstructor`, `@NoArgsConstructor`.
 - **exception/** — Custom exceptions and global error handling. `CustomerNotFoundException` (maps to 404). `GlobalExceptionHandler` (`@RestControllerAdvice`) for centralized exception handling.
 - **config/** — Spring beans and configuration. `ApiProperties` is a `@ConfigurationProperties` record (prefix `app.api`) validated with Jakarta Validation. `WebClientConfig` provides the reactive `WebClient` bean.
 - **config/health/** — Custom `HealthIndicator` implementations. `ViaCepHealthIndicator` checks ViaCep API availability at `/actuator/health`.
@@ -48,6 +49,7 @@ Three-layer structure under `com.spring_base.fundamentals`:
 - WebClient (from spring-boot-starter-webflux) for non-blocking HTTP calls
 - Java 21 Virtual Threads via `Executors.newVirtualThreadPerTaskExecutor()`
 - Actuator endpoints: `health`, `info`, `metrics`
+- Spring Data JPA repositories for data access (`JpaRepository`)
 - Idempotency Key pattern via request header + in-memory store
 - Global exception handling with `@RestControllerAdvice`
 - Custom exceptions mapping to specific HTTP status codes
@@ -74,4 +76,4 @@ docker run -p 8080:8080 spring-mastery-lab:latest
 
 ## Dependencies
 
-Maven project (`pom.xml`) with: spring-boot-starter-web, spring-boot-starter-webflux, spring-boot-starter-actuator, spring-boot-starter-validation, Lombok (compile-only).
+Maven project (`pom.xml`) with: spring-boot-starter-web, spring-boot-starter-webflux, spring-boot-starter-actuator, spring-boot-starter-validation, spring-boot-starter-data-jpa, PostgreSQL driver, Lombok (compile-only).

@@ -32,6 +32,53 @@ class CustomerControllerTest {
     @MockitoBean
     private CustomerService customerService;
 
+    // POST tests
+
+    @Test
+    @DisplayName("POST: should return 201 when creating customer successfully")
+    void shouldReturn201WhenCreatingCustomer() throws Exception {
+        // ARRANGE
+        Customer created = new Customer(1L, "Lucas", "lucas@email.com");
+        when(customerService.createCustomer(any(Customer.class))).thenReturn(created);
+
+        // ACT + ASSERT
+        mockMvc.perform(post("/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"Lucas\", \"email\": \"lucas@email.com\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Lucas"))
+                .andExpect(jsonPath("$.email").value("lucas@email.com"));
+
+        verify(customerService).createCustomer(any(Customer.class));
+    }
+
+    @Test
+    @DisplayName("POST: should return 400 when name is blank")
+    void shouldReturn400WhenPostNameIsBlank() throws Exception {
+        // ACT + ASSERT
+        mockMvc.perform(post("/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"\", \"email\": \"lucas@email.com\"}"))
+                .andExpect(status().isBadRequest());
+
+        verify(customerService, never()).createCustomer(any());
+    }
+
+    @Test
+    @DisplayName("POST: should return 400 when email is invalid")
+    void shouldReturn400WhenPostEmailIsInvalid() throws Exception {
+        // ACT + ASSERT
+        mockMvc.perform(post("/customer")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"Lucas\", \"email\": \"invalid\"}"))
+                .andExpect(status().isBadRequest());
+
+        verify(customerService, never()).createCustomer(any());
+    }
+
+    // PATCH tests
+
     @Test
     @DisplayName("PATCH: deve retornar 200 quando atualizar com sucesso")
     void deveRetornar200QuandoPatchComSucesso() throws Exception {

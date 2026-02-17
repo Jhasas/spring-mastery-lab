@@ -2,35 +2,42 @@ package com.spring_base.fundamentals.service;
 
 import com.spring_base.fundamentals.exception.CustomerNotFoundException;
 import com.spring_base.fundamentals.model.Customer;
+import com.spring_base.fundamentals.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CustomerService {
 
-    private final Map<Long, Customer> customers = new ConcurrentHashMap<>();
+    private final CustomerRepository customerRepository;
     private final Map<String, Object> idempotencyStore = new ConcurrentHashMap<>();
-    public CustomerService() {
-        customers.put(1L, new Customer(1L, "Lucas", "lucas@email.com"));
-        customers.put(2L, new Customer(2L, "Maria", "maria@email.com"));
+
+    public Customer createCustomer(Customer customer) {
+        log.info("Creating new Customer: {}", customer.getName());
+        long start = System.currentTimeMillis();
+
+        Customer saved = customerRepository.save(customer);
+
+        long duration = System.currentTimeMillis() - start;
+        log.info("Customer created with id {} in {}ms", saved.getId(), duration);
+
+        return saved;
     }
 
     public Customer deleteCustomer(Long id) {
         log.info("Delete Customer by id: {}", id);
         long start = System.currentTimeMillis();
 
-        Customer existingCustomer = customers.get(id);
-        if(existingCustomer!=null) {
-            customers.remove(id);
-        } else {
-            throw new CustomerNotFoundException(id);
-        }
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
+        customerRepository.deleteById(id);
 
         long duration = System.currentTimeMillis() - start;
         log.info("Delete Customer id {} completed in {}ms", id, duration);
@@ -39,7 +46,7 @@ public class CustomerService {
     }
 
     public List<Customer> getAllCustomers() {
-        return new ArrayList<>(customers.values());
+        return customerRepository.findAll();
     }
 
     public Map<String, Object> getCustomer(Long id) {
@@ -47,10 +54,8 @@ public class CustomerService {
         log.info("Get Customer by id: {}", id);
         long start = System.currentTimeMillis();
 
-        Customer existingCustomer = customers.get(id);
-        if(existingCustomer==null) {
-            throw new CustomerNotFoundException(id);
-        }
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
 
         long duration = System.currentTimeMillis() - start;
         log.info("Get Customer id {} completed in {}ms", id, duration);
@@ -80,14 +85,11 @@ public class CustomerService {
             );
         }
 
-        Customer existingCustomer = customers.get(id);
-        if(existingCustomer!=null) {
-            storeIdempotency(idempotencyKey, newData);
-            newData.setId(id);
-            this.customers.put(id, newData);
-        } else {
-            throw new CustomerNotFoundException(id);
-        }
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
+        storeIdempotency(idempotencyKey, newData);
+        newData.setId(id);
+        customerRepository.save(newData);
 
         long duration = System.currentTimeMillis() - start;
         log.info("Replace for id {} completed in {}ms", id, duration);
@@ -104,14 +106,11 @@ public class CustomerService {
         log.info("Update Customer for id: {}", id);
         long start = System.currentTimeMillis();
 
-        Customer existing = customers.get(id);
-
-        if(existing!=null) {
-            if(partialData.getName()!= null) existing.setName(partialData.getName());
-            if(partialData.getEmail()!= null) existing.setEmail(partialData.getEmail());
-        } else {
-            throw new CustomerNotFoundException(id);
-        }
+        Customer existing = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException(id));
+        if(partialData.getName()!= null) existing.setName(partialData.getName());
+        if(partialData.getEmail()!= null) existing.setEmail(partialData.getEmail());
+        customerRepository.save(existing);
 
         long duration = System.currentTimeMillis() - start;
         log.info("Update for id {} completed in {}ms", id, duration);

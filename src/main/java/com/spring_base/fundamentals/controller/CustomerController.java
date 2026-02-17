@@ -4,6 +4,8 @@ import com.spring_base.fundamentals.model.Customer;
 import com.spring_base.fundamentals.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,12 @@ import java.util.Map;
 public class CustomerController {
 
     private final CustomerService customerService;
+
+    @PostMapping
+    public ResponseEntity<Customer> createCustomer(@RequestBody @Valid Customer customer) {
+        Customer created = customerService.createCustomer(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
     @PutMapping("/{id}")
     public Map<String, Object> putCustomer(@RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey, @PathVariable Long id, @RequestBody @Valid Customer customer) {
