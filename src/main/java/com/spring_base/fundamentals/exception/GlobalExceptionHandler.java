@@ -36,4 +36,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleRuntimeException(RuntimeException ex) {
+        return Map.of(
+                "error", "Internal Server Error",
+                "message", ex.getMessage() != null ? ex.getMessage() : "Unexpected error",
+                "status", HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
 }
