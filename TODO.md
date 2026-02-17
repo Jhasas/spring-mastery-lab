@@ -39,8 +39,11 @@ Activity roadmap for the Spring mastery laboratory.
   - `ViaCepHealthIndicator` test
   - Consider WireMock for simulating external APIs
 
-- [ ] **Add global exception handling (`@ControllerAdvice`)**
-  - Create `GlobalExceptionHandler`
+- [x] **Add global exception handling (`@ControllerAdvice`)**
+  - Created `GlobalExceptionHandler` with `@RestControllerAdvice`
+  - Created `CustomerNotFoundException` mapping to HTTP 404
+  - Returns structured error responses with error, message, and status
+- [ ] **Expand exception handling**
   - Handle validation errors (`MethodArgumentNotValidException`)
   - Handle CEP not found
   - Handle external API communication failures

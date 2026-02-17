@@ -23,6 +23,17 @@ Type-safe configuration using Java Records with `@ConfigurationProperties` and J
 ### Health Indicators
 Custom `HealthIndicator` for monitoring external API availability, exposed through Spring Boot Actuator.
 
+### Customer CRUD (PUT & PATCH)
+- **PUT** `/customer/{id}` — full resource replacement with Idempotency-Key header support
+- **PATCH** `/customer/{id}` — partial update (only non-null fields are modified)
+- In-memory storage with custom exception handling (`CustomerNotFoundException` → 404)
+
+### Idempotency Key
+Header-based idempotency mechanism on the PUT endpoint. Duplicate requests with the same `Idempotency-Key` return the original response without reprocessing.
+
+### Global Exception Handling
+`@RestControllerAdvice` with `GlobalExceptionHandler` for centralized error handling, returning structured error responses with proper HTTP status codes.
+
 ## Running Locally
 
 ```bash
@@ -40,6 +51,8 @@ The application starts on port **8080** with the `dev` profile by default.
 | GET | `/actuator/health` | Application and external API health status |
 | GET | `/actuator/info` | Application info |
 | GET | `/actuator/metrics` | Runtime metrics |
+| PUT | `/customer/{id}` | Replace customer (supports Idempotency-Key header) |
+| PATCH | `/customer/{id}` | Partially update customer |
 
 **Example:**
 ```bash
