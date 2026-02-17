@@ -5,15 +5,15 @@ import com.spring_base.fundamentals.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
 public class CustomerService {
 
-    private final Map<Long, Customer> customers = new HashMap<>();
-    private final Map<String, Object> idempotencyStore = new HashMap<>();
+    private final Map<Long, Customer> customers = new ConcurrentHashMap<>();
+    private final Map<String, Object> idempotencyStore = new ConcurrentHashMap<>();
     public CustomerService() {
         customers.put(1L, new Customer(1L, "Lucas", "lucas@email.com"));
         customers.put(2L, new Customer(2L, "Maria", "maria@email.com"));
@@ -24,7 +24,6 @@ public class CustomerService {
         log.info("Replacing Customer for id: {}", id);
         long start = System.currentTimeMillis();
 
-        Customer existingCustomer = customers.get(id);
         Object existingIdempotencyKey = checkIdempotency(idempotencyKey);
 
         if(existingIdempotencyKey != null) {
@@ -38,8 +37,10 @@ public class CustomerService {
             );
         }
 
+        Customer existingCustomer = customers.get(id);
         if(existingCustomer!=null) {
             storeIdempotency(idempotencyKey, newData);
+            newData.setId(id);
             this.customers.put(id, newData);
         } else {
             throw new CustomerNotFoundException(id);
@@ -83,7 +84,7 @@ public class CustomerService {
 
         if(key == null) return null;
 
-        Object existing = this.idempotencyStore.get(key);
+        Object existing = idempotencyStore.get(key);
 
         if(existing != null) {
             log.warn("Idempotency Key duplicated");
@@ -97,7 +98,7 @@ public class CustomerService {
     private void storeIdempotency(String key, Object result) {
         if (key == null) return;
 
-        this.idempotencyStore.put(key, result);
+        this.idempotencyStore.putIfAbsent(key, result);
     }
 
 }
