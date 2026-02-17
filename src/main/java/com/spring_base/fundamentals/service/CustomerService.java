@@ -5,6 +5,8 @@ import com.spring_base.fundamentals.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +19,47 @@ public class CustomerService {
     public CustomerService() {
         customers.put(1L, new Customer(1L, "Lucas", "lucas@email.com"));
         customers.put(2L, new Customer(2L, "Maria", "maria@email.com"));
+    }
+
+    public Customer deleteCustomer(Long id) {
+        log.info("Delete Customer by id: {}", id);
+        long start = System.currentTimeMillis();
+
+        Customer existingCustomer = customers.get(id);
+        if(existingCustomer!=null) {
+            customers.remove(id);
+        } else {
+            throw new CustomerNotFoundException(id);
+        }
+
+        long duration = System.currentTimeMillis() - start;
+        log.info("Delete Customer id {} completed in {}ms", id, duration);
+
+        return existingCustomer;
+    }
+
+    public List<Customer> getAllCustomers() {
+        return new ArrayList<>(customers.values());
+    }
+
+    public Map<String, Object> getCustomer(Long id) {
+
+        log.info("Get Customer by id: {}", id);
+        long start = System.currentTimeMillis();
+
+        Customer existingCustomer = customers.get(id);
+        if(existingCustomer==null) {
+            throw new CustomerNotFoundException(id);
+        }
+
+        long duration = System.currentTimeMillis() - start;
+        log.info("Get Customer id {} completed in {}ms", id, duration);
+
+        return Map.of(
+                "customer", existingCustomer,
+                "elapsedMs", duration,
+                "method", "getCustomer"
+        );
     }
 
     public Map<String, Object> replaceCustomer(String idempotencyKey, Long id, Customer newData) {
