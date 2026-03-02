@@ -1,6 +1,8 @@
 package com.spring_base.fundamentals.service;
 
 import com.spring_base.fundamentals.config.ApiProperties;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +38,12 @@ public class CepServiceTest {
     @Mock
     private ApiProperties apiProperties;
 
+    @Mock
+    private MeterRegistry meterRegistry;
+
+    @Mock
+    private Counter counter;
+
     @InjectMocks
     private CepService cepService;
 
@@ -46,30 +55,32 @@ public class CepServiceTest {
 
         when(apiProperties.viacep()).thenReturn(new ApiProperties.ViaCep("http://fake-viecep"));
         when(apiProperties.second()).thenReturn(new ApiProperties.Second("http://fake-nationalize"));
+
+        when(meterRegistry.counter(anyString(), any(String[].class))).thenReturn(counter);
     }
 
     @Test
     @DisplayName("CompletableFuture: should return CEP data")
-    void deveRetornarDadosDoCepComCompletableFuture() {
+    void shouldReturnCepDataWithCompletableFuture() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
-                .thenReturn(Mono.just("resposta fake"));
+                .thenReturn(Mono.just("fake response"));
 
         // ACT
         Map<String, Object> result = cepService.fetchCepCompletableFuture("83402220");
 
         // ASSERT
-        assertEquals("resposta fake", result.get("viaCep"));
-        assertEquals("resposta fake", result.get("nationalize"));
+        assertEquals("fake response", result.get("viaCep"));
+        assertEquals("fake response", result.get("nationalize"));
         assertEquals("CompletableFuture", result.get("method"));
     }
 
     @Test
     @DisplayName("CompletableFuture: should contain execution time")
-    void deveConterTempoDeExecucaoNoResultado() {
+    void shouldContainExecutionTimeInResult() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
-                .thenReturn(Mono.just("resposta fake"));
+                .thenReturn(Mono.just("fake response"));
 
         // ACT
         Map<String, Object> result = cepService.fetchCepCompletableFuture("83402220");
@@ -80,26 +91,26 @@ public class CepServiceTest {
 
     @Test
     @DisplayName("VirtualThreads: should return CEP data")
-    void deveRetornarDadosDoCepComVirtualThreads() {
+    void shouldReturnCepDataWithVirtualThreads() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
-                .thenReturn(Mono.just("resposta fake"));
+                .thenReturn(Mono.just("fake response"));
 
         // ACT
         Map<String, Object> result = cepService.fetchCepVirtualThreads("83402220");
 
         // ASSERT
-        assertEquals("resposta fake", result.get("viaCep"));
-        assertEquals("resposta fake", result.get("nationalize"));
+        assertEquals("fake response", result.get("viaCep"));
+        assertEquals("fake response", result.get("nationalize"));
         assertEquals("Virtual Threads", result.get("method"));
     }
 
     @Test
     @DisplayName("VirtualThreads: should contain execution time")
-    void deveConterTempoDeExecucaoComVirtualThreads() {
+    void shouldContainExecutionTimeWithVirtualThreads() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
-                .thenReturn(Mono.just("resposta fake"));
+                .thenReturn(Mono.just("fake response"));
 
         // ACT
         Map<String, Object> result = cepService.fetchCepVirtualThreads("83402220");
@@ -110,10 +121,10 @@ public class CepServiceTest {
 
     @Test
     @DisplayName("Should throw exception when CEP API fails")
-    void deveLancarExceptionQuandoApiCepFalhar() {
+    void shouldThrowExceptionWhenCepApiFails() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
-                .thenThrow(new RuntimeException("API fora"));
+                .thenThrow(new RuntimeException("API down"));
         // ACT
         // ASSERT
         assertThrows(RuntimeException.class, () -> {

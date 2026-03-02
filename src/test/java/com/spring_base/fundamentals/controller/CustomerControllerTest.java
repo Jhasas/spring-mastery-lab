@@ -81,7 +81,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("PATCH: should return 200 when update is successful")
-    void deveRetornar200QuandoPatchComSucesso() throws Exception {
+    void shouldReturn200WhenPatchSucceeds() throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
 
@@ -101,7 +101,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("PATCH: should return 404 when customer does not exist")
-    void deveRetornar404QuandoClienteNaoExiste() throws Exception {
+    void shouldReturn404WhenCustomerDoesNotExist() throws Exception {
         // ARRANGE
         when(customerService.updateCustomer(eq(99L), any(Customer.class)))
                 .thenThrow(new CustomerNotFoundException(99L));
@@ -116,7 +116,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("PUT: should return 200 when PUT with Idempotency-Key")
-    void deveRetornar200QuandoPutComIdempotencyKey() throws Exception {
+    void shouldReturn200WhenPutWithIdempotencyKey() throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
 
@@ -135,7 +135,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("PUT: should accept PUT without Idempotency-Key")
-    void deveAceitarPutSemIdempotencyKey () throws Exception {
+    void shouldAcceptPutWithoutIdempotencyKey() throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
 
@@ -152,7 +152,7 @@ class CustomerControllerTest {
     }
     @Test
     @DisplayName("PUT: should return 400 when name is blank")
-    void deveRetornar400QuandoNomeEmBranco() throws Exception {
+    void shouldReturn400WhenNameIsBlank() throws Exception {
         // ACT + ASSERT
         mockMvc.perform(put("/customer/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -164,9 +164,9 @@ class CustomerControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"email-invalido", "@.com", "user@", "abc"})
+    @ValueSource(strings = {"invalid-email", "@.com", "user@", "abc"})
     @DisplayName("PUT: should return 400 when email is invalid")
-    void deveRetornar400QuandoEmailInvalido(String invalidEmail) throws Exception {
+    void shouldReturn400WhenEmailIsInvalid(String invalidEmail) throws Exception {
         // ACT + ASSERT
         mockMvc.perform(put("/customer/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -177,7 +177,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("GET: should return 200 and customer when id exists")
-    void deveRetornar200ECustomerQuandoGetComIdExistente () throws Exception {
+    void shouldReturn200AndCustomerWhenGetWithExistingId() throws Exception {
         // ARRANGE
         Customer customer = new Customer(1L, "Lucas Teste", "lucasteste@email.com");
 
@@ -193,7 +193,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("GET: should return 404 when id does not exist")
-    void deveRetornar404QuandoGetComIdInexistente () throws Exception {
+    void shouldReturn404WhenGetWithNonExistentId() throws Exception {
         // ARRANGE
         when(customerService.getCustomer(eq(42L)))
                 .thenThrow(new CustomerNotFoundException(42L));
@@ -207,7 +207,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("GET: should return 200 with customer list")
-    void deveRetornar200ComListaDeCustomers() throws Exception {
+    void shouldReturn200WithCustomerList() throws Exception {
         // ARRANGE
         List<Customer> customers = List.of(
                 new Customer(1L, "Lucas", "lucas@email.com"),
@@ -229,7 +229,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("DELETE: should return 200 when delete is successful")
-    void deveRetornar200QuandoDeletarComSucesso() throws Exception {
+    void shouldReturn200WhenDeleteSucceeds() throws Exception {
 
         // ARRANGE
         Customer customer = new Customer(1L, "Lucas Teste", "lucasteste@email.com");
@@ -248,7 +248,7 @@ class CustomerControllerTest {
 
     @Test
     @DisplayName("DELETE: should return 404 when deleting non-existent id")
-    void deveRetornar404QuandoDeletarIdInexistente() throws Exception {
+    void shouldReturn404WhenDeletingNonExistentId() throws Exception {
 
         // ARRANGE
         when(customerService.deleteCustomer(eq(42L)))
