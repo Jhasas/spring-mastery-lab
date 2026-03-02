@@ -80,7 +80,7 @@ class CustomerControllerTest {
     // PATCH tests
 
     @Test
-    @DisplayName("PATCH: deve retornar 200 quando atualizar com sucesso")
+    @DisplayName("PATCH: should return 200 when update is successful")
     void deveRetornar200QuandoPatchComSucesso() throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
@@ -100,7 +100,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("PATCH: deve retornar 404 quando cliente não existe")
+    @DisplayName("PATCH: should return 404 when customer does not exist")
     void deveRetornar404QuandoClienteNaoExiste() throws Exception {
         // ARRANGE
         when(customerService.updateCustomer(eq(99L), any(Customer.class)))
@@ -115,7 +115,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("PUT: deve retornar 200 quando PUT com Idempotency-Key")
+    @DisplayName("PUT: should return 200 when PUT with Idempotency-Key")
     void deveRetornar200QuandoPutComIdempotencyKey() throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
@@ -134,7 +134,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("PUT: deve aceitar PUT sem Idempotency-Key")
+    @DisplayName("PUT: should accept PUT without Idempotency-Key")
     void deveAceitarPutSemIdempotencyKey () throws Exception {
         // ARRANGE
         Customer updated = new Customer(1L, "Lucas Teste", "lucas@email.com");
@@ -151,7 +151,7 @@ class CustomerControllerTest {
                 .andExpect(jsonPath("$.customer.email").value("lucas@email.com"));
     }
     @Test
-    @DisplayName("PUT: deve retornar 400 quando nome em branco")
+    @DisplayName("PUT: should return 400 when name is blank")
     void deveRetornar400QuandoNomeEmBranco() throws Exception {
         // ACT + ASSERT
         mockMvc.perform(put("/customer/1")
@@ -165,7 +165,7 @@ class CustomerControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"email-invalido", "@.com", "user@", "abc"})
-    @DisplayName("PUT: deve retornar 400 quando email inválido")
+    @DisplayName("PUT: should return 400 when email is invalid")
     void deveRetornar400QuandoEmailInvalido(String invalidEmail) throws Exception {
         // ACT + ASSERT
         mockMvc.perform(put("/customer/1")
@@ -176,7 +176,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("GET: deve retornar 200 e customer quando id existe")
+    @DisplayName("GET: should return 200 and customer when id exists")
     void deveRetornar200ECustomerQuandoGetComIdExistente () throws Exception {
         // ARRANGE
         Customer customer = new Customer(1L, "Lucas Teste", "lucasteste@email.com");
@@ -192,7 +192,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("GET: deve retornar 404 quando id não existe")
+    @DisplayName("GET: should return 404 when id does not exist")
     void deveRetornar404QuandoGetComIdInexistente () throws Exception {
         // ARRANGE
         when(customerService.getCustomer(eq(42L)))
@@ -206,7 +206,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("GET: deve retornar 200 com lista de customers")
+    @DisplayName("GET: should return 200 with customer list")
     void deveRetornar200ComListaDeCustomers() throws Exception {
         // ARRANGE
         List<Customer> customers = List.of(
@@ -228,7 +228,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE: deve retornar 200 quando deletar com sucesso")
+    @DisplayName("DELETE: should return 200 when delete is successful")
     void deveRetornar200QuandoDeletarComSucesso() throws Exception {
 
         // ARRANGE
@@ -247,7 +247,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE: deve retornar 404 quando deletar id inexistente")
+    @DisplayName("DELETE: should return 404 when deleting non-existent id")
     void deveRetornar404QuandoDeletarIdInexistente() throws Exception {
 
         // ARRANGE

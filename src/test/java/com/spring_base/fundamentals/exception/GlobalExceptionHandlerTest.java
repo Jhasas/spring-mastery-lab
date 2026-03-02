@@ -19,7 +19,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar Map com mensagem correta")
+    @DisplayName("Should return Map with correct message")
     void deveRetornarMapComMensagemCorreta() {
 
         //ARRANGE
@@ -35,7 +35,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @DisplayName("Deve conter status NOT_FOUND")
+    @DisplayName("Should contain NOT_FOUND status")
     void deveConterStatusNotFound() {
         //ARRANGE
         CustomerNotFoundException exception = new CustomerNotFoundException(42L);

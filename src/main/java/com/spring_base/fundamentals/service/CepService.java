@@ -1,6 +1,8 @@
 package com.spring_base.fundamentals.service;
 
 import com.spring_base.fundamentals.config.ApiProperties;
+import io.micrometer.context.ContextSnapshotFactory;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,29 @@ public class CepService {
     private final WebClient webClient;
     private final ApiProperties apiProperties;
 
+    private final MeterRegistry meterRegistry;
+
     public Map<String, Object> fetchCepVirtualThreads(String cep) {
+
+        meterRegistry.counter("cep_requests_total", "version", "v2").increment();
 
         log.info("Fetching data for CEP (Virtual Threads): {}", cep);
         long start = System.currentTimeMillis();
 
         try(ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
-            Future<String> futureCep = executor.submit(() -> apiCep(cep));
-            Future<String> futureNationalize = executor.submit(() -> apiNationalize(cep));
+            var snapshot = ContextSnapshotFactory.builder().build().captureAll();
+
+            Future<String> futureCep = executor.submit(() -> {
+                try (var scope = snapshot.setThreadLocals()){
+                    return apiCep(cep);
+                }
+            });
+            Future<String> futureNationalize = executor.submit(() -> {
+                try (var scope = snapshot.setThreadLocals()){
+                    return apiNationalize(cep);
+                }
+            });
 
             String cepResult = futureCep.get();
             String nationalizeResult = futureNationalize.get();
@@ -51,11 +67,24 @@ public class CepService {
 
     public Map<String, Object> fetchCepCompletableFuture(String cep) {
 
+        meterRegistry.counter("cep_requests_total", "version", "v1").increment();
+
         log.info("Fetching data for CEP: {}", cep);
         long start = System.currentTimeMillis();
 
-        CompletableFuture<String> futureCep = CompletableFuture.supplyAsync(() -> apiCep(cep));
-        CompletableFuture<String> futureNationalize = CompletableFuture.supplyAsync(() -> apiNationalize(cep));
+
+        var snapshot = ContextSnapshotFactory.builder().build().captureAll();
+
+        CompletableFuture<String> futureCep = CompletableFuture.supplyAsync(() -> {
+            try (var scope = snapshot.setThreadLocals()){
+                return apiCep(cep);
+            }
+        });
+        CompletableFuture<String> futureNationalize = CompletableFuture.supplyAsync(() -> {
+            try (var scope = snapshot.setThreadLocals()){
+                return apiNationalize(cep);
+            }
+        });
 
         CompletableFuture.allOf(futureCep, futureNationalize).join();
 

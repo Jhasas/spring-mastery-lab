@@ -49,7 +49,7 @@ public class CepServiceTest {
     }
 
     @Test
-    @DisplayName("CompletableFuture: deve retornar dados do CEP")
+    @DisplayName("CompletableFuture: should return CEP data")
     void deveRetornarDadosDoCepComCompletableFuture() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
@@ -65,7 +65,7 @@ public class CepServiceTest {
     }
 
     @Test
-    @DisplayName("CompletableFuture: deve conter tempo de execucao")
+    @DisplayName("CompletableFuture: should contain execution time")
     void deveConterTempoDeExecucaoNoResultado() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
@@ -79,7 +79,7 @@ public class CepServiceTest {
     }
 
     @Test
-    @DisplayName("VirtualThreads: deve retornar dados do CEP")
+    @DisplayName("VirtualThreads: should return CEP data")
     void deveRetornarDadosDoCepComVirtualThreads() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
@@ -95,7 +95,7 @@ public class CepServiceTest {
     }
 
     @Test
-    @DisplayName("VirtualThreads: deve conter tempo de execucao")
+    @DisplayName("VirtualThreads: should contain execution time")
     void deveConterTempoDeExecucaoComVirtualThreads() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))
@@ -109,7 +109,7 @@ public class CepServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lancar exception quando api cep falhar")
+    @DisplayName("Should throw exception when CEP API fails")
     void deveLancarExceptionQuandoApiCepFalhar() {
         // ARRANGE
         when(responseSpec.bodyToMono(String.class))

@@ -25,7 +25,7 @@ public class CepControllerTest {
     private CepService cepService;
 
     @Test
-    @DisplayName("GET v1: deve retornar 200 com dados do CEP via CompletableFuture")
+    @DisplayName("GET v1: should return 200 with CEP data via CompletableFuture")
     void deveRetornar200ComDadosDoCepViaCompletableFuture() throws Exception {
         // ARRANGE
         when(cepService.fetchCepCompletableFuture("83402220"))
@@ -38,7 +38,7 @@ public class CepControllerTest {
     }
 
     @Test
-    @DisplayName("GET v2: deve retornar 200 com dados do CEP via Virtual Threads")
+    @DisplayName("GET v2: should return 200 with CEP data via Virtual Threads")
     void deveRetornar200ComDadosDoCepViaVirtualThreads() throws Exception {
         // ARRANGE
         when(cepService.fetchCepVirtualThreads("83402220"))
@@ -51,7 +51,7 @@ public class CepControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1: deve retornar 500 quando service falhar")
+    @DisplayName("GET v1: should return 500 when service fails")
     void deveLancarExceptionQuandoServiceFalhar() throws Exception {
         // ARRANGE
         when(cepService.fetchCepCompletableFuture("83402220"))
