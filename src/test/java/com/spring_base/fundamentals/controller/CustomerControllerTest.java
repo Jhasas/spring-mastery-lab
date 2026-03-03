@@ -2,7 +2,7 @@ package com.spring_base.fundamentals.controller;
 
 import com.spring_base.fundamentals.exception.CustomerNotFoundException;
 import com.spring_base.fundamentals.model.Customer;
-import com.spring_base.fundamentals.service.CustomerService;
+import com.spring_base.fundamentals.service.customer.CustomerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

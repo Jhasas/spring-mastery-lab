@@ -1,4 +1,4 @@
-package com.spring_base.fundamentals.service;
+package com.spring_base.fundamentals.service.customer;
 
 import com.spring_base.fundamentals.exception.CustomerNotFoundException;
 import com.spring_base.fundamentals.model.Customer;

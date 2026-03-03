@@ -1,7 +1,7 @@
 package com.spring_base.fundamentals.controller;
 
 import com.spring_base.fundamentals.model.Customer;
-import com.spring_base.fundamentals.service.CustomerService;
+import com.spring_base.fundamentals.service.customer.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,10 @@
 package com.spring_base.fundamentals.controller;
 
-import com.spring_base.fundamentals.service.CepService;
+import com.spring_base.fundamentals.service.cep.CepFetcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,13 +23,18 @@ public class CepControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CepService cepService;
+    @Qualifier("v1")
+    private CepFetcher v1Fetcher;
+
+    @MockitoBean
+    @Qualifier("v2")
+    private CepFetcher v2Fetcher;
 
     @Test
     @DisplayName("GET v1: should return 200 with CEP data via CompletableFuture")
     void shouldReturn200WithCepDataViaCompletableFuture() throws Exception {
         // ARRANGE
-        when(cepService.fetchCepCompletableFuture("83402220"))
+        when(v1Fetcher.fetch("83402220"))
                 .thenReturn(Map.of("viaCep", "{}", "nationalize", "{}", "elapsedMs", 0L, "method", "CompletableFuture"));
 
         // ACT + ASSERT
@@ -41,7 +47,7 @@ public class CepControllerTest {
     @DisplayName("GET v2: should return 200 with CEP data via Virtual Threads")
     void shouldReturn200WithCepDataViaVirtualThreads() throws Exception {
         // ARRANGE
-        when(cepService.fetchCepVirtualThreads("83402220"))
+        when(v2Fetcher.fetch("83402220"))
                 .thenReturn(Map.of("viaCep", "{}", "nationalize", "{}", "elapsedMs", 0L, "method", "Virtual Threads"));
 
         // ACT + ASSERT
@@ -51,14 +57,26 @@ public class CepControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1: should return 500 when service fails")
-    void shouldReturn500WhenServiceFails() throws Exception {
+    @DisplayName("GET v1: should return 500 when service fails via CompletableFuture")
+    void shouldReturn500WhenServiceFailsViaCompletableFuture() throws Exception {
         // ARRANGE
-        when(cepService.fetchCepCompletableFuture("83402220"))
+        when(v1Fetcher.fetch("83402220"))
                 .thenThrow(new RuntimeException());
 
         // ACT + ASSERT
         mockMvc.perform(get("/cep/v1/83402220"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("GET v2: should return 500 when service fails via Virtual Threads")
+    void shouldReturn500WhenServiceFailsViaVirtualThreads() throws Exception {
+        // ARRANGE
+        when(v2Fetcher.fetch("83402220"))
+                .thenThrow(new RuntimeException());
+
+        // ACT + ASSERT
+        mockMvc.perform(get("/cep/v2/83402220"))
                 .andExpect(status().isInternalServerError());
     }
 
