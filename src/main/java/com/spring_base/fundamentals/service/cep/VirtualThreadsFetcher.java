@@ -1,13 +1,11 @@
 package com.spring_base.fundamentals.service.cep;
 
-import com.spring_base.fundamentals.config.ApiProperties;
 import io.micrometer.context.ContextSnapshotFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
